@@ -4,12 +4,12 @@
 class wordleGame
 {
 private:
-    wordLists* words;
+    wordList* words;
     vector<string> validAnswerWords;
     string  currentWord;
     int turnNum;
 public:
-
+    
     wordleGame(/* args */);
     ~wordleGame();
 };
