@@ -32,11 +32,6 @@ struct wordLists{
     void loadWordMap();
 };
 
-class wordleGame{
-    private:
-        
-}
-
 
 
 

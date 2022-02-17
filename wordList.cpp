@@ -1,15 +1,15 @@
-#pragma once
 #include "wordList.h"
 
 wordList::wordList(){
-    loadWordLists;
-    loadWordMap;
+    loadWordLists();
+    loadWordMap();
 }
 
 void wordList::loadWordLists(){
     int i = 0;
+    allWords.resize(5);
     answerWords.resize(3000);
-    validInputWords.resize(11000);
+    validInputWords.resize(14000);
     ifstream answers("wordleAnswers.txt");
     while(!answers.eof()){
         answers >> answerWords[i];
@@ -32,7 +32,7 @@ void wordList::loadWordMap(){
     for(int i = 0; i < answerWords.size(); ++i){
         word = answerWords[i];
         for(int j = 0; j < 5; ++j){
-            allWords[word[j]][j].push_back(i);
+            allWords[j][word[j]].push_back(i);
         }
     }
 }

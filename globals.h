@@ -14,6 +14,10 @@ using namespace std;
 
 typedef int ansId;          //Answer words      
 typedef int inpId;         //Valid input words
-typedef unordered_map<char, vector<ansId>[5]> sortedWords;
+typedef vector < unordered_map<char, vector <ansId> > > sortedWords;
 
 char alpha [26] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h','i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r' , 's' , 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
+#define GREEN 1
+#define YELLOW 0
+#define GRAY -1
