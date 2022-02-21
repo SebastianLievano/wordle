@@ -1,67 +1,70 @@
 #pragma once
-#include "wordList.h"
-
-
-
-
-
+#include "globals.h"
 
 class wordleBot{
     private:
-        wordList* words;
-        sortedWords potentialWordsMap;
-        vector<double> proportionalimp;
-        vector<int> potentialAnswers;
-        vector<inpId> bestMovesForInfo;
-        int turnCounter;
-        unordered_map < char, int > numWordsWLetter;
-        int numRemainingAnswers;
+        vector<string> answers; //all potential answer words
+        vector<string> validInputs; //all potential input words
+        //map storing quantities of words with each letter
+        vector < unordered_map <char, int> > numMap;
+        //map storing words in each category
+        vector < unordered_map <char, vector<ansId> > > ansMap;
+        //vector storing all potential answers
+        vector <ansId> potAns;
+        int turnCounter;       //stores turn number
+        int numAnswers;         //stores answer number
     public:
         //Constructor
-        wordleBot(wordList* wordList);
+        wordleBot();
         //Destructor
         ~wordleBot();
 
-        //Accessor
-        vector<ansId> getPotentialAnswers();
+        //Constructor Helper
+        void initWords();
 
-        vector<pair <inpId, double > > getBestInputs();
+        int getNumRemainingAnswers();
 
-        //Input Receiving and Update Processes
-        void updatePotentialAnswers(int result[5], string word);
+        string getInputWord(int id);
 
-        //Update vector based on result (remove grays)
-        void updateBasedOnGrays(int result[5], string word, vector<ansId> &vect);
+        string getAnswerWord(int id);
 
-        //Vector function that returns a vector of all values that are only in the frist
+        vector<ansId> getAnswers();
+
+        //Different behaviour on first turn
+        void firstTurn();
+        
+        void printVector(vector<int> &vect);
+
+        //Returns vector of 5 best inputs
+        pair < double, int > getBestInput();
+
+        //Calculates score of word
+        double getWordScore(inpId id);
+
+        //Calculates score value of letter in that position
+        double getLetterScore(int pos, char letter);
+
+        //Updates answer vector
+        void updateAnswers(string result, string word);
+
+        //Updates based on green squares
+        void updateBasedOnGreens(string result, string word);
+
+        //updates based on yellow squares
+        void updateBasedOnYellows(string result, string word);
+
+        //updates based on gray squares
+        void updateBasedOnGrays(string result, string word);
+
+        //returns a vector of the values in both vectors
+        vector<int> inBoth(const vector<int> &answerVector, const vector<int> &wordVector);       
+
+        //returns a vector of the values only in the first vector
         vector<int> onlyInFirst(vector<int> firstVect, vector<int> secondVect);
 
-        //Updates word map to only contain potential answers
-        void updateWordMap();
+        //Updates both map data structures
+        void updateMaps();
 
-        //Bot Processes
-        
-        //Top level returns 10 best info moves and their values
-        vector< pair <inpId, double > > returnBestInfoMove();
-
-        //Returns value of word
-        double wordValue(string word);
-
-        //Returns value of a permutation
-        double permutationValue(int result[5], string word);
-
-        //Calculates average size change based on which letters are removed
-        double graysProbabilityCut(int result[5], string word);
-
-        //Updates given vector based on green values in result
-        void updateBasedOnGreens(int result[5], string word, vector<ansId> &vect);
-
-        //Updates given vector based on yellow values
-        void updateBasedOnYellows(int result[5], string word, vector<ansId> &vect);
-
-        //returns a vector of all options in both vectors
-        vector<int> inBoth(const vector<int> &answerVector, const vector<int> &wordVector);        
-        //Utility
-        
+        void printAnswers();
 };
 

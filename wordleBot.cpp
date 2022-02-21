@@ -1,156 +1,165 @@
 #include "wordleBot.h"
 
-wordleBot::wordleBot(wordList* wordList){
-    string word;
-    words = wordList;
-    potentialWordsMap = words -> allWords;
-    potentialAnswers.resize(words -> answerWords.size());
-    for(int i = 0; i < words -> answerWords.size(); ++i){
-        potentialAnswers[i] = i;
-        word = words->answerWords[i];
-        for(int i = 0; i < 5; ++i){
-            numWordsWLetter[word[i]]++;
-        }
+//Constructor
+wordleBot::wordleBot(){
+    initWords();  
+    potAns.resize(answers.size());
+    for(int i = 0; i < answers.size(); ++i){
+        potAns[i] = i;
     }
     turnCounter = 0;
+    numAnswers = answers.size();  
+    numMap.resize(7);
+    ansMap.resize(5);
+    updateMaps();
 }
 
 //Destructor
 wordleBot::~wordleBot(){}
 
-        //Accessor
-vector<ansId> wordleBot::getPotentialAnswers(){
-    return potentialAnswers;
+//Initializes both word vectors from files
+void wordleBot::initWords(){
+    string input;
+    ifstream ansFile("wordleAnswers.txt");
+    while(!ansFile.eof()){
+        ansFile >> input;
+        if(input == "") break;
+        answers.push_back(input);
+    }
+    ifstream inputs("wordleGuesses.txt");
+    while(!inputs.eof()){
+        inputs >> input;
+        if(input == "") break;
+        validInputs.push_back(input);
+    }
 }
 
-vector< pair < inpId, double > > wordleBot::getBestInputs(){
-    if(turnCounter == 0){
-        //Return some of the best guess options
-        vector<pair <inpId, double > > bestFirstGuesses {make_pair(2368, 0), make_pair(11115, 0), make_pair(7564, 0), make_pair (109, 0)};
-        return bestFirstGuesses;
-    }
-    return returnBestInfoMove(); 
+//First turn special case
+void wordleBot::firstTurn(){
+    cout << "Good first inputs are:\ncrane\ntares\nnotes\nadieu\n";
 }
 
-//WordleBot
-vector< pair <inpId, double > > wordleBot::returnBestInfoMove(){
-    //goal is to return 10 best moves for information
-    vector < pair <inpId, double> > bestInputs;
-    double lowestWordValue, val;
-    set< pair < double, inpId > > solution;
-    auto lowestVal = solution.begin();
-    for(int i = 0; i <  10; ++i){
-        solution.insert(make_pair( wordValue(words -> validInputWords[i]), i));
+int wordleBot::getNumRemainingAnswers(){
+    return numAnswers;
+}
+
+string wordleBot::getAnswerWord(int id){
+    return answers[id];
+}
+
+string wordleBot::getInputWord(int id){
+    return validInputs[id];
+}
+
+vector<ansId> wordleBot::getAnswers(){
+    vector<ansId> ans;
+    if(potAns.size() < 5){
+        return potAns;
     }
-    lowestWordValue = lowestVal -> first;
-    for(int i = 10; i < words -> validInputWords.size(); ++i){
-        val = wordValue(words -> validInputWords[i]);
-        if(val > lowestWordValue){
-            solution.erase(lowestVal);
-            solution.insert(make_pair(val, i));
+    else{
+        for(int i = 0; i < 5; ++i){
+            ans.push_back(potAns[i]);
         }
     }
-    for(auto it = solution.begin(); it != solution.end(); ++it){
-        bestInputs.push_back(*it);
-    }
-    return bestInputs;
+    return ans;
 }
 
-double wordleBot::wordValue(string word){
-//iterating through all 3^5 permutations
-    int resultArray[5];
-    double wordValue = 0;
-    for(resultArray[0] = GRAY; resultArray[0] < 2; resultArray[0]++){
-        for(resultArray[1] = GRAY; resultArray[1] < 2; resultArray[1]++){
-            for(resultArray[2] = GRAY; resultArray[2] < 2; resultArray[2]++){
-                for(resultArray[3] = GRAY; resultArray[3] < 2; resultArray[3]++){
-                    for(resultArray[4] = GRAY; resultArray[4] < 2; resultArray[4]++){
-                        wordValue += permutationValue(resultArray, word);
-                    }
-                }
-            }
+pair < double, int > wordleBot::getBestInput(){
+    int bestId;
+    double bestScore = 0, score;
+    for(int i = 0; i < validInputs.size(); ++i){
+        score = getWordScore(i);
+        if(score > bestScore){
+            bestId = i;
+            bestScore = score;
         }
     }
-    return wordValue;
+    return make_pair(bestScore, bestId);
 }
 
-double wordleBot::permutationValue(int result[5], string word){
-    double size, graysProbability;
-    vector<ansId> potentialVals = potentialAnswers;
-    updateBasedOnGreens(result, word, potentialVals);
-    updateBasedOnYellows (result, word, potentialVals);
-    size = graysProbabilityCut(result, word)*potentialVals.size();
-    return size;
-}
-
-double wordleBot::graysProbabilityCut(int result[5], string word){
-    double probability = 1, currentProbability;
+double wordleBot::getWordScore(inpId id){
+    double score = 0;
+    string word = validInputs[id];
+    unordered_set<char> letters;
     for(int i = 0; i < 5; ++i){
-        if(result[i] == GRAY){
-            currentProbability = (double)(numRemainingAnswers - numWordsWLetter[word[i]])/(double)(numRemainingAnswers);
-            probability *= currentProbability;
+        if(letters.count(word[i])){
+            score += numMap[DUP_NUM][word[i]];
+        }
+        else{
+            letters.insert(word[i]);
+            score += getLetterScore(i, word[i]);
         }
     }
-    return probability;
+    score = score / numAnswers;
+    return score;
 }
 
-void wordleBot::updateBasedOnGreens(int result[5], string word, vector<int> &vect){
+double wordleBot::getLetterScore(int pos, char letter){
+    double score = numMap[TOTAL_NUM][letter] + numMap[pos][letter];
+    return score;
+}
+
+void wordleBot::updateAnswers(string result, string word){
+    updateBasedOnGreens(result, word);
+    updateBasedOnYellows(result, word);
+    updateBasedOnGrays(result, word);
+}
+
+void wordleBot::updateBasedOnGreens(string result, string word){
     for(int i = 0; i < 5; ++i){
-        if(result[i] == GREEN){
-            vect = inBoth(vect, potentialWordsMap[i][word[i]]);
-        }
+        if(result[i] != 'G') continue;
+        potAns = inBoth(potAns, ansMap[i][word[i]]);
     }
 }
 
-void wordleBot::updateBasedOnYellows(int result[5], string word, vector<int> &vect){
+void wordleBot::updateBasedOnYellows(string result, string word){
     for(int i = 0; i < 5; ++i){
-        if(result[i] == YELLOW){
-            for(int j = 0; j < 5; ++j){
-                if(i == j) continue;
-                vect = inBoth(vect, potentialWordsMap[j][word[i]]);
-            }
+        if(result[i] != 'Y') continue;
+        for(int j = 0; j < 5; ++j){
+            if(j == i) continue;
+            potAns = inBoth(potAns, ansMap[j][word[i]]);
         }
     }
 }
 
-
-//Since both vectors are sorted, we can use an algorithm to cut time down to O(n)
-vector<int> wordleBot::inBoth(const vector<int> &answerVector, const vector<int> &wordVector){
-    if(answerVector.size() == numRemainingAnswers) return wordVector;
-    vector<int> valsInBoth;
-    int i = 0, j = 0;
-    while(i < answerVector.size() && j < wordVector.size()){
-        if(answerVector[i] == wordVector[j]){
-            valsInBoth.push_back(answerVector[i]);
-        }
-        else if(answerVector[i] < wordVector[j]) ++i;
-        else ++j;
+void wordleBot::printVector(vector<int> &vect){
+    for(int i = 0; i < vect.size(); ++i){
+        cout << answers[vect[i]] << " ";
     }
-    return valsInBoth;
+    cout << endl;
 }
 
-void wordleBot::updatePotentialAnswers(int result[5], string word){
-    updateBasedOnGreens(result, word, potentialAnswers);
-    updateBasedOnYellows(result, word, potentialAnswers);
-    updateBasedOnGrays(result, word, potentialAnswers);
-    updateWordMap();
-}
-
-void wordleBot::updateBasedOnGrays(int result[5], string word, vector<ansId> &vect){
+void wordleBot::updateBasedOnGrays(string result, string word){
     for(int i = 0; i < 5; ++i){
-        if(result[i] == GRAY){
-            for(int j = 0; j < 5; ++j){
-                vect = onlyInFirst(vect, potentialWordsMap[j][word[i]]);
-            }
+        if(result[i] != 'B') continue;
+        for(int j = 0; j < 5; ++j){
+            potAns = onlyInFirst(potAns, ansMap[j][word[i]]);
         }
     }
 }
+
+
 
 vector<int> wordleBot::onlyInFirst(vector<int> firstVect, vector<int> secondVect){
-    auto it1 = firstVect.begin(), it2 = secondVect.begin();
+    vector<int> ans;
+    unordered_set<int> inSecond;
+    for(int i = 0; i < secondVect.size(); ++i){
+        inSecond.insert(secondVect[i]);
+    }
+    for(int j = 0; j < firstVect.size(); ++j){
+        if(!inSecond.count(firstVect[j])) ans.push_back(firstVect[j]);
+    }
+    return ans;
+}
+
+vector<int> wordleBot::inBoth(const vector<int>  &firstVect, const vector<int> &secondVect){
+    vector<int> ans;
+    cout << "started inBoth" << endl;
+    auto it1 = firstVect.begin();
+    auto it2 = secondVect.begin();
     while(it1 != firstVect.end() && it2 != secondVect.end()){
         if(*it1 == *it2){
-            firstVect.erase(it1);
+            ans.push_back(*it1);
             it1++;
         }
         else if(*it1 > *it2){
@@ -158,21 +167,30 @@ vector<int> wordleBot::onlyInFirst(vector<int> firstVect, vector<int> secondVect
         }
         else it1++;
     }
-    firstVect.shrink_to_fit();
-    return firstVect;
-}
+     return ans;
+} 
 
-void wordleBot::updateWordMap(){
-    potentialWordsMap.clear();
-    potentialWordsMap.resize(5);
-    numWordsWLetter.clear();
+void wordleBot::updateMaps(){
     string word;
-    numRemainingAnswers = potentialAnswers.size();
-    for(int i = 0; i < potentialAnswers.size(); ++i){
-        word = words -> answerWords[potentialAnswers[i]];
+    char let;
+    unordered_set<char> letters;
+    for(int i = 0; i < potAns.size(); ++i){
+        word = answers[potAns[i]];
+        letters.clear();
         for(int j = 0; j < 5; ++j){
-            potentialWordsMap[j][word[j]].push_back(potentialAnswers[i]);
-            numWordsWLetter[word[j]]++;
+            let = word[j];
+            if(letters.count(let)) numMap[DUP_NUM][let]++;
+            else{
+                numMap[TOTAL_NUM][let]++;
+                letters.insert(let);
+            }
+            numMap[j][let]++;
+            ansMap[j][let].push_back(potAns[i]);
         }
     }
+    numAnswers = potAns.size();
+    turnCounter++;
 }
+
+
+
