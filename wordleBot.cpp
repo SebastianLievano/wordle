@@ -9,8 +9,7 @@ wordleBot::wordleBot(){
     }
     turnCounter = 0;
     numAnswers = answers.size();  
-    numMap.resize(7);
-    ansMap.resize(5);
+    ansMap.resize(7);
     updateMaps();
 }
 
@@ -36,7 +35,7 @@ void wordleBot::initWords(){
 
 //First turn special case
 void wordleBot::firstTurn(){
-    cout << "Good first inputs are:\ncrane\ntares\nnotes\nadieu\n";
+    cout << "Good first inputs are:\nslate\ncrane\ntares\nadieu\n";
 }
 
 int wordleBot::getNumRemainingAnswers(){
@@ -64,7 +63,12 @@ vector<ansId> wordleBot::getAnswers(){
     return ans;
 }
 
-pair < double, int > wordleBot::getBestInput(){
+
+int wordleBot::getBestInput(){
+    if(potAns.size() < 3){
+        cout << "endgame" << endl;
+        return -1;
+    }
     int bestId;
     double bestScore = 0, score;
     for(int i = 0; i < validInputs.size(); ++i){
@@ -74,36 +78,86 @@ pair < double, int > wordleBot::getBestInput(){
             bestScore = score;
         }
     }
-    return make_pair(bestScore, bestId);
+    return bestId;
 }
 
+
+//If letter in all values, letter freq = 1
+//Max score = 5, min = 0
 double wordleBot::getWordScore(inpId id){
     double score = 0;
-    string word = validInputs[id];
+    string word = getInputWord(id);
     unordered_set<char> letters;
     for(int i = 0; i < 5; ++i){
-        if(letters.count(word[i])){
-            score += numMap[DUP_NUM][word[i]];
-        }
-        else{
+        if(!letters.count(word[i])){
+            score += letterFreq[word[i]];
             letters.insert(word[i]);
-            score += getLetterScore(i, word[i]);
         }
     }
-    score = score / numAnswers;
     return score;
 }
 
-double wordleBot::getLetterScore(int pos, char letter){
-    double score = numMap[TOTAL_NUM][letter] + numMap[pos][letter];
-    return score;
+//Yellow/Yellow - Run first
+//Green/Yellow - Find all words that fit this category
+//Green/Black - Letter only appears once in spot
+//Yellow/Black - Letter only appears once in spot
+//Gray/Gray - normal stuff
+
+string wordleBot::dealWithDuplicate(string result, string word, int idx1){
+    char letter = word[idx1], val1 = result[idx1], val2;
+    vector<int> ans;
+    int idx2;
+    for(int i = 0; i < 5; ++i){
+        if(word[i] == letter){
+            idx2 = i;
+            val2 = result[idx2];
+        }
+    }
+    //If either one is black, then we need to skip it
+    if(val1 == 'B'){
+        result[idx1] = 'S';
+        goto done;
+    }
+    if(val2 == 'B'){
+        result[idx2] = 'S';
+        goto done;
+    }
+    if(val1 == val2){
+        if(val1 == 'G') goto done;
+        potAns = onlyInFirst(ansMap[DUP_NUM][letter], ansMap[idx1][letter]);
+        potAns = onlyInFirst(potAns, ansMap[idx2][letter]);
+        result[idx1] = 'S';
+        result[idx2] = 'S';
+        goto done;
+    }
+    else if(val1 == 'G'){
+        potAns = inBoth(ansMap[DUP_NUM][letter], ansMap[idx1][letter]);
+        potAns = onlyInFirst(potAns, ansMap[idx2][letter]);
+    }
+    else {
+        potAns = inBoth(ansMap[DUP_NUM][letter], ansMap[idx2][letter]);
+        potAns = onlyInFirst(potAns, ansMap[idx1][letter]);
+    }
+    done:
+    return result;
 }
+
+
 
 void wordleBot::updateAnswers(string result, string word){
+    unordered_set<char> letters;
+    for(int i = 0; i < 5; ++i){
+        if(letters.count(word[i])) result = dealWithDuplicate(result, word, i);
+        else letters.insert(word[i]);
+    }
     updateBasedOnGreens(result, word);
     updateBasedOnYellows(result, word);
     updateBasedOnGrays(result, word);
+    for(int i = 0; i < 5; ++i){
+        if(result[i] == 'G') greens.push_back(word[i]);
+    }
 }
+
 
 void wordleBot::updateBasedOnGreens(string result, string word){
     for(int i = 0; i < 5; ++i){
@@ -113,13 +167,14 @@ void wordleBot::updateBasedOnGreens(string result, string word){
 }
 
 void wordleBot::updateBasedOnYellows(string result, string word){
+    cout << "Started updating based on yellows" << endl;
+    vector<vector<int> > ans;
     for(int i = 0; i < 5; ++i){
         if(result[i] != 'Y') continue;
-        for(int j = 0; j < 5; ++j){
-            if(j == i) continue;
-            potAns = inBoth(potAns, ansMap[j][word[i]]);
-        }
+        potAns = inBoth(potAns, ansMap[TOTAL_NUM][word[i]]);
+        potAns = onlyInFirst(potAns, ansMap[i][word[i]]);
     }
+
 }
 
 void wordleBot::printVector(vector<int> &vect){
@@ -154,7 +209,6 @@ vector<int> wordleBot::onlyInFirst(vector<int> firstVect, vector<int> secondVect
 
 vector<int> wordleBot::inBoth(const vector<int>  &firstVect, const vector<int> &secondVect){
     vector<int> ans;
-    cout << "started inBoth" << endl;
     auto it1 = firstVect.begin();
     auto it2 = secondVect.begin();
     while(it1 != firstVect.end() && it2 != secondVect.end()){
@@ -172,21 +226,28 @@ vector<int> wordleBot::inBoth(const vector<int>  &firstVect, const vector<int> &
 
 void wordleBot::updateMaps(){
     string word;
+    string alphabet = "abcdefghijklmnopqrstuvwxyz";
     char let;
     unordered_set<char> letters;
+    letterFreq.clear();
+    ansMap.clear();
+    ansMap.resize(7);
     for(int i = 0; i < potAns.size(); ++i){
         word = answers[potAns[i]];
         letters.clear();
         for(int j = 0; j < 5; ++j){
             let = word[j];
-            if(letters.count(let)) numMap[DUP_NUM][let]++;
-            else{
-                numMap[TOTAL_NUM][let]++;
+            if(!letters.count(let)){
+                letterFreq[let]++;
                 letters.insert(let);
+                ansMap[TOTAL_NUM][let].push_back(potAns[i]);
             }
-            numMap[j][let]++;
+            else ansMap[DUP_NUM][let].push_back(potAns[i]);
             ansMap[j][let].push_back(potAns[i]);
         }
+    }
+    for(int j = 0; j < greens.size(); ++j){
+        letterFreq[greens[j]] = 0;
     }
     numAnswers = potAns.size();
     turnCounter++;

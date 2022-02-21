@@ -2,10 +2,9 @@
 
 
 int main(){
-    int dummy, numAns, numAnsLast;
+    int dummy, numAns, numAnsLast, bestInput;
     wordleBot bot;
     string input, result;
-    pair <double, int> bestInput;
     vector<ansId> ans;
     cout << "WORDLE HELPER" << endl;
     for(int i = 0; i < 7; ++i){
@@ -13,23 +12,23 @@ int main(){
         numAns = bot.getNumRemainingAnswers();
         if(i == 0){
             bot.firstTurn();
-            goto skipped;
+            goto invalid;
         }
         bestInput = bot.getBestInput();
-        cout << "Done getting best input" << endl;
-        cout << "Your best input is: " << bot.getInputWord(bestInput.second) << "  " << bestInput.first << endl;
-        skipped:
         ans = bot.getAnswers();
-        cout << "There are " << numAns << " remaining potential answers" << endl;
-        cout << "This is " << numAns - numAnsLast << " than before this input" << endl;
+        if(bestInput == -1){
+            cout << "Best input is: " << bot.getAnswerWord(ans[0]) << endl;
+        }
+        else cout << "Best input is " << bot.getInputWord(bestInput) << endl;
+        cout << numAns << " remaining potential answers" << endl;
         cout << "Potential Answers include: " << endl;
         for(int i = 0; i < ans.size(); ++i){
             cout << bot.getAnswerWord(ans[i]) << endl;
         }
         invalid:
-        cout << "Please input the word you inputted: ";
+        cout << "\nyour input: ";
         cin >> input;
-        cout << "Please input the result (B for Gray/black, G for green, Y for yellow): ";
+        cout << "B for Gray/black, G for green, Y for yellow\nresult: ";
         cin >> result;
         if(result.length() != 5 || input.length() != 5) goto invalid;
         for(int i = 0; i < 5; ++i){

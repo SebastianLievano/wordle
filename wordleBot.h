@@ -6,7 +6,8 @@ class wordleBot{
         vector<string> answers; //all potential answer words
         vector<string> validInputs; //all potential input words
         //map storing quantities of words with each letter
-        vector < unordered_map <char, int> > numMap;
+        vector<char> greens;
+        unordered_map < char, int > letterFreq;
         //map storing words in each category
         vector < unordered_map <char, vector<ansId> > > ansMap;
         //vector storing all potential answers
@@ -36,7 +37,7 @@ class wordleBot{
         void printVector(vector<int> &vect);
 
         //Returns vector of 5 best inputs
-        pair < double, int > getBestInput();
+        int getBestInput();
 
         //Calculates score of word
         double getWordScore(inpId id);
@@ -46,6 +47,8 @@ class wordleBot{
 
         //Updates answer vector
         void updateAnswers(string result, string word);
+
+        string dealWithDuplicate(string result, string word, int idx1);
 
         //Updates based on green squares
         void updateBasedOnGreens(string result, string word);
