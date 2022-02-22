@@ -1,9 +1,0 @@
-Word    AVG.    Num Failed
-slate   3.675   1
-crane   3.731   0
-crate   3.733   2
-salet   3.747   6
-tares   3.824   10
-oater   3.872   7
-realo   3.994   10
-adieu   3.994   10
