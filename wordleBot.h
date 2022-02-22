@@ -14,7 +14,7 @@ class wordleBot{
         vector <ansId> potAns;
         int turnCounter;       //stores turn number
         int numAnswers;         //stores answer number
-        int lastInput;
+        int lastInput;          //Stores last input ID
     public:
         //Constructor
         wordleBot();
@@ -24,19 +24,25 @@ class wordleBot{
         //Constructor Helper
         void initWords();
 
+        //returns number of remaining potential words
         int getNumRemainingAnswers();
 
+        //Returns input word from its ID
         string getInputWord(int id);
 
+        //Returns answer word from its ID
         string getAnswerWord(int id);
 
+        //Returns vector of some answers (max size 5)
         vector<ansId> getAnswers();
 
+        //Deletes the first answer option
         void removeFirstAnswerOption();
 
         //Different behaviour on first turn
         void firstTurn();
         
+        //Prints given vector
         void printVector(vector<int> &vect);
 
         //Returns vector of 5 best inputs
@@ -48,6 +54,7 @@ class wordleBot{
         //Updates answer vector
         void updateAnswers(string result, string word);
 
+        //Returns an updated result vector after dealing with duplicate letter edge cases
         string dealWithDuplicate(string result, string word, int idx1);
 
         //Updates based on green squares
@@ -68,8 +75,7 @@ class wordleBot{
         //Updates both map data structures
         void updateMaps();
 
-        void printAnswers();
-
+        //Resets the bot without having to reload all data structures; useful for testing purposes
         void reset();
 };
 

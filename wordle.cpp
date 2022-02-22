@@ -30,7 +30,7 @@ string calculateResult(string answerWord, string inputWord){
 
 void testSuite(wordleBot& bot){
     string correctAnswer, input, result;
-    string startingWord = "adieu";
+    string startingWord = "crate";
     double average;
     unordered_map <int, vector<string> > guesses;
     vector<int> ans;
