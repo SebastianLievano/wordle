@@ -21,30 +21,30 @@ Success is largerly based on the first word you select. Included below are the a
 starting words (Using version 1.0 - Feb 21th) The best average per word comes from SLATE, but CRANE is the only starting word 
 which guarantees completing all words.
 
-Word    AVG.    Num Failed
-slate   3.675   1
-crane   3.731   0
-crate   3.733   2
-salet   3.747   6
-tares   3.824   10
-oater   3.872   7
-realo   3.994   10
-adieu   3.994   10
+      Word    AVG.    Num Failed
+      slate   3.675   1
+      crane   3.731   0
+      crate   3.733   2
+      salet   3.747   6
+      tares   3.824   10
+      oater   3.872   7
+      realo   3.994   10
+      adieu   3.994   10
 
 The bot also has the option to test different starting words and get the average results. FOR EXAMPLE:
 
-Starting Word: Adieu
-Duration: 160 seconds
-Duration/Word: ~12 ms
-1 guesses:   0
-2 guesses:   ||34
-3 guesses:   |||||||||||||||||||||||571
-4 guesses:   |||||||||||||||||||||||||||||||||||||||||||||||1171
-5 guesses:   |||||||||||||||||||463
-6 guesses:   |||66
-FAILURES: 10
-Words Failed: caste paste petal shave state stave taste vocal waste whose 
-Average Guesses to get Word = 3.99568
+      Starting Word: Adieu
+      Duration: 160 seconds
+      Duration/Word: ~12 ms
+      1 guesses:   0
+      2 guesses:   ||34
+      3 guesses:   |||||||||||||||||||||||571
+      4 guesses:   |||||||||||||||||||||||||||||||||||||||||||||||1171
+      5 guesses:   |||||||||||||||||||463
+      6 guesses:   |||66
+      FAILURES: 10
+      Words Failed: caste paste petal shave state stave taste vocal waste whose 
+      Average Guesses to get Word = 3.99568
 
 HOW DOES THIS BOT WORK?
 NOTE: ∩ = intersection of sets (part of both)
