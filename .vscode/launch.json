@@ -13,7 +13,7 @@
       "environment": [],
       "program": "/Users/sebastianlievanoarzayus/Desktop/c/projects/wordle_bot/build/Debug/outDebug",
       "internalConsoleOptions": "openOnSessionStart",
-      "MIMode": "gdb",
+      "MIMode": "lldb",
       "externalConsole": false
     }
   ]

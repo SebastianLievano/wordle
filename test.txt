@@ -1,0 +1,49 @@
+Starting Word: slate
+1 guesses: 1
+2 guesses: 57
+3 guesses: 912
+4 guesses: 1094
+5 guesses: 224
+6 guesses: 25
+FAILURES: rover 
+Average numGuesses = 3.67502
+
+Starting word: crane
+1 guesses: 1
+2 guesses: 55
+3 guesses: 854
+4 guesses: 1083
+5 guesses: 297
+6 guesses: 24
+FAILURES: 
+Average numGuesses = 3.7312
+
+Starting word: tares
+1 guesses: 0
+2 guesses: 44
+3 guesses: 783
+4 guesses: 1098
+5 guesses: 325
+6 guesses: 54
+FAILURES: graze hatch poker refer shake shame shave stove swore wound 
+Average numGuesses = 3.82368
+
+Starting word: oater
+1 guesses: 0
+2 guesses: 56
+3 guesses: 674
+4 guesses: 1159
+5 guesses: 366
+6 guesses: 52
+FAILURES: shave snore spore swore taunt write wrote 
+Average numGuesses = 3.87252
+
+Starting word: adieu
+1 guesses: 0
+2 guesses: 34
+3 guesses: 570
+4 guesses: 1171
+5 guesses: 463
+6 guesses: 66
+FAILURES: caste paste petal shave state stave taste vocal waste whose 
+Average numGuesses = 3.99438

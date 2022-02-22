@@ -29,6 +29,17 @@
   ],
   "files.associations": {
     "vector": "cpp",
-    "unordered_map": "cpp"
+    "unordered_map": "cpp",
+    "utility": "cpp",
+    "set": "cpp",
+    "iostream": "cpp",
+    "__hash_table": "cpp",
+    "__bit_reference": "cpp",
+    "algorithm": "cpp",
+    "bitset": "cpp",
+    "chrono": "cpp",
+    "map": "cpp",
+    "unordered_set": "cpp",
+    "iosfwd": "cpp"
   }
 }
