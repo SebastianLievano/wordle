@@ -11,6 +11,7 @@ wordleBot::wordleBot(){
     numAnswers = answers.size();  
     ansMap.resize(7);
     updateMaps();
+    lastInput = -1;
 }
 
 //Destructor
@@ -36,6 +37,10 @@ void wordleBot::initWords(){
 //First turn special case
 void wordleBot::firstTurn(){
     cout << "Good first inputs are:\nslate\ncrane\ntares\nadieu\n";
+}
+
+void wordleBot::removeFirstAnswerOption(){
+    potAns.erase(potAns.begin());
 }
 
 int wordleBot::getNumRemainingAnswers(){
@@ -66,18 +71,18 @@ vector<ansId> wordleBot::getAnswers(){
 
 int wordleBot::getBestInput(){
     if(potAns.size() < 3){
-        cout << "endgame" << endl;
         return -1;
     }
     int bestId;
     double bestScore = 0, score;
     for(int i = 0; i < validInputs.size(); ++i){
         score = getWordScore(i);
-        if(score > bestScore){
+        if(score > bestScore && i != lastInput){
             bestId = i;
             bestScore = score;
         }
     }
+    lastInput = bestId;
     return bestId;
 }
 
@@ -111,6 +116,7 @@ string wordleBot::dealWithDuplicate(string result, string word, int idx1){
         if(word[i] == letter){
             idx2 = i;
             val2 = result[idx2];
+            break;
         }
     }
     //If either one is black, then we need to skip it
@@ -167,7 +173,6 @@ void wordleBot::updateBasedOnGreens(string result, string word){
 }
 
 void wordleBot::updateBasedOnYellows(string result, string word){
-    cout << "Started updating based on yellows" << endl;
     vector<vector<int> > ans;
     for(int i = 0; i < 5; ++i){
         if(result[i] != 'Y') continue;
@@ -251,6 +256,19 @@ void wordleBot::updateMaps(){
     }
     numAnswers = potAns.size();
     turnCounter++;
+}
+
+void wordleBot::reset(){
+    potAns.resize(answers.size());
+    for(int i = 0; i < answers.size(); ++i){
+        potAns[i] = i;
+    }
+    turnCounter = 0;
+    numAnswers = answers.size();  
+    ansMap.resize(7);
+    greens.clear();
+    updateMaps();
+    lastInput = -1;
 }
 
 

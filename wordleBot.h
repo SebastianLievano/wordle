@@ -14,6 +14,7 @@ class wordleBot{
         vector <ansId> potAns;
         int turnCounter;       //stores turn number
         int numAnswers;         //stores answer number
+        int lastInput;
     public:
         //Constructor
         wordleBot();
@@ -31,6 +32,8 @@ class wordleBot{
 
         vector<ansId> getAnswers();
 
+        void removeFirstAnswerOption();
+
         //Different behaviour on first turn
         void firstTurn();
         
@@ -41,9 +44,6 @@ class wordleBot{
 
         //Calculates score of word
         double getWordScore(inpId id);
-
-        //Calculates score value of letter in that position
-        double getLetterScore(int pos, char letter);
 
         //Updates answer vector
         void updateAnswers(string result, string word);
@@ -69,5 +69,7 @@ class wordleBot{
         void updateMaps();
 
         void printAnswers();
+
+        void reset();
 };
 
