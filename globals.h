@@ -1,5 +1,6 @@
 #pragma once
 
+//Header Files
 #include <iostream>
 #include <vector>
 #include <map>
@@ -8,21 +9,18 @@
 #include <unordered_set>
 #include <fstream>
 #include <string>
+#include <cmath>
+#include <ctime>
 using namespace std;
 
 //two types of words in wordle
 
-typedef int ansId;          //Answer words      
-typedef int inpId;         //Valid input words
-typedef vector < unordered_map<char, vector <ansId> > > sortedWords;
+typedef int ansId;      //Answer Words 
+typedef int inpId;      //Input Words
 
-//char alpha [26] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h','i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r' , 's' , 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-
-#define GREEN 1
-#define YELLOW 0
-#define GRAY -1
+#define TOTAL_NUM 5     //typedefs for use in ansMap structure
 #define DUP_NUM 6
-#define TOTAL_NUM 5
+
 
 
 

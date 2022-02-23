@@ -12,7 +12,6 @@ class wordleBot{
         vector < unordered_map <char, vector<ansId> > > ansMap;
         //vector storing all potential answers
         vector <ansId> potAns;
-        int turnCounter;       //stores turn number
         int numAnswers;         //stores answer number
         int lastInput;          //Stores last input ID
     public:
@@ -55,7 +54,7 @@ class wordleBot{
         void updateAnswers(string result, string word);
 
         //Returns an updated result vector after dealing with duplicate letter edge cases
-        string dealWithDuplicate(string result, string word, int idx1);
+        string dealWithDuplicate(string result, string word, int idx2);
 
         //Updates based on green squares
         void updateBasedOnGreens(string result, string word);
