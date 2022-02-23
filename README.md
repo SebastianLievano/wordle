@@ -62,7 +62,13 @@ WordScore = Σ letterFreq[letter]
 
 The current version of the bot does not account for duplicates. It will only add the frequency of a letter once.
 
+WORDLE HISTORY
 
+      Wordle 247 4/6          Wordle 248 3/6          Wordle 249 3/6
 
-
-
+      ⬛⬛⬛🟨🟨                ⬛⬛⬛🟨⬛               ⬛🟩⬛⬛🟩                           
+      🟨⬛🟨🟩⬛                ⬛🟨🟨🟩🟨               ⬛⬛🟨🟨🟨
+      🟨🟨⬛🟨🟨                🟩🟩🟩🟩🟩               🟩🟩🟩🟩🟩
+      🟩🟩🟩🟩🟩
+      ST: SLATE               ST:SLATE               ST: CRANE
+      
