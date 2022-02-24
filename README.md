@@ -72,3 +72,9 @@ WORDLE HISTORY
       🟩🟩🟩🟩🟩
       ST: SLATE               ST:SLATE               ST: CRANE
       
+      Wordle 250 4/6
+
+      ⬛🟩⬛⬛🟩
+      ⬛⬛🟩⬛⬛
+      ⬛🟨⬛⬛🟨
+      🟩🟩🟩🟩🟩
