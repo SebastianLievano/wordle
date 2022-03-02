@@ -77,23 +77,26 @@ bool playTurn(wordleBot &bot, int mode){
     string bestInput, result;
     inpId id = bot.getBestInput();
     vector<int> ans = bot.getAnswers();
-    if(ans.size() == 0) cout << "No Potential Answers\n";
+    if(ans.size() == 0) cout << "No Potential Answers" << endl;
     if(ans.size() == 1){
         cout << "ONE REMAINING POTENTIAL ANSWER: " << bot.getAnswerWord(ans[0]) << endl;
         return true;
     }
     if(id == -1){
         bestInput = bot.getAnswerWord(ans[0]);
-        bot.removeFirstAnswerOption();
+        if(mode == 1){
+            cout << "Removing inputted answer: " << bot.getAnswerWord(ans[0]) << endl;
+            bot.removeFirstAnswerOption();
+        }
     }
     else bestInput = bot.getInputWord(id);
     invalid:
     cout << "Your best input is " << bestInput << endl;
     if(!mode){
-        cout << "Your input: ";
+        cout << "Your input: " << endl;
         cin >> bestInput;
     }
-    cout << "B for Gray/black, G for green, Y for yellow\nresult: ";
+    cout << "B for Gray/black, G for green, Y for yellow\nresult: " << endl;
   
   
     cin >> result;
@@ -101,7 +104,9 @@ bool playTurn(wordleBot &bot, int mode){
     for(int i = 0; i < 5; ++i){
         if(result[i] != 'B' && result[i] != 'G' && result[i] != 'Y') goto invalid;
     }
+    cout << "Valid Input!" << endl;
     bot.updateAnswers(result, bestInput);
+    cout << "Updated Answers!" << endl;
     bot.updateMaps();
     return false;
 }   
