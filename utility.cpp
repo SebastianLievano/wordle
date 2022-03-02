@@ -77,6 +77,7 @@ bool playTurn(wordleBot &bot, int mode){
     string bestInput, result;
     inpId id = bot.getBestInput();
     vector<int> ans = bot.getAnswers();
+    if(ans.size() == 0) cout << "No Potential Answers\n";
     if(ans.size() == 1){
         cout << "ONE REMAINING POTENTIAL ANSWER: " << bot.getAnswerWord(ans[0]) << endl;
         return true;
